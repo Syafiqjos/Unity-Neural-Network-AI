@@ -59,8 +59,8 @@ public class FrogGameMaster : MonoBehaviour
 
     void Start()
     {
-        latestIndexTerrain = new int[FrogGameMemory.GetInputCount()];
-        latestIndex = new bool[FrogGameMemory.GetInputCount()];
+        latestIndexTerrain = new int[FrogGameNeuralNetwork.GetInputCount()];
+        latestIndex = new bool[FrogGameNeuralNetwork.GetInputCount()];
 
         latestIndexOffset = 4;
 
@@ -69,7 +69,7 @@ public class FrogGameMaster : MonoBehaviour
         isGameOver = false;
         isGameOverPrev = false;
         //
-        for (int i = 0; i < FrogGameMemory.GetInputCount() + 5; i++)
+        for (int i = 0; i < FrogGameNeuralNetwork.GetInputCount() + 5; i++)
         {
             Spawn(true);
         }
@@ -82,15 +82,17 @@ public class FrogGameMaster : MonoBehaviour
         randomTime -= Time.deltaTime;
         if (randomTime < 0)
         {
-            if (FrogGameMemory.memoryFragments.Count > 0)
+            /*
+            if (FrogGameNeuralNetwork.memoryFragments.Count > 0)
             {
-                randomTime = Random.Range(0.0f, randomTimeMax / (FrogGameMemory.memoryFragments.Count * 2));
+                randomTime = Random.Range(0.0f, randomTimeMax / (FrogGameNeuralNetwork.memoryFragments.Count * 2));
             } else
             {
                 randomTime = Random.Range(0.0f, randomTimeMax);
             }
+            */
 
-            Jump(FrogGameMemory.CheckMemory(latestIndex));
+            Jump(FrogGameNeuralNetwork.CheckMemory(latestIndex));
         }
     }
 
@@ -156,6 +158,8 @@ public class FrogGameMaster : MonoBehaviour
         CheckGameOver();
     }
 
+    static int propm = 0;
+
     void Spawn(bool skip = false)
     {
         int isSafe = Random.Range(0, 2);
@@ -169,7 +173,7 @@ public class FrogGameMaster : MonoBehaviour
             if (isSafe == 0)
             {
                 int count = 0;
-                for (int i = 1; i < FrogGameMemory.GetInputCount(); i++)
+                for (int i = 1; i < FrogGameNeuralNetwork.GetInputCount(); i++)
                 {
                     if (indexList[indexList.Count - i] == false)
                     {
@@ -177,12 +181,26 @@ public class FrogGameMaster : MonoBehaviour
                     }
                 }
 
-                if (count >= FrogGameMemory.GetInputCount() - 1)
+                if (count >= FrogGameNeuralNetwork.GetInputCount() - 1)
                 {
                     isSafe = 1;
                 }
             }
         }
+
+        if (indexList.Count > 0)
+        {
+            if (indexList[indexList.Count - 1] && propm % 2 == 0)
+            {
+                //isSafe = 0;
+            }
+            else
+            {
+            //    isSafe = 1;
+            }
+        }
+
+        propm++;
 
         //isSafe = 1;
 
